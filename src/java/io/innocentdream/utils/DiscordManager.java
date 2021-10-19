@@ -15,12 +15,12 @@ public class DiscordManager implements Runnable {
     private Thread thread;
 
     public DiscordManager() {
-        if (!InnocentDream.online) {
+        if (!NetworkManager.online) {
             core = null;
             activity = null;
             return;
         }
-        File discordLibrary = new File("libs\\natives\\discord\\lib\\x86_64\\discord_game_sdk.dll");
+        File discordLibrary = LibraryManager.discord();
         Core.init(discordLibrary);
         try (CreateParams params = new CreateParams()) {
             params.setClientID(837415091812171806L);

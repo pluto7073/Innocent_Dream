@@ -197,5 +197,86 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-stb-natives-windows.jar!/windows/x64/org/lwjgl/stb" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-par-natives-windows.jar!/windows/x64/org/lwjgl/par" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-opengl-natives-windows.jar!/windows/x64/org/lwjgl/opengl" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-openal-natives-windows.jar!/windows/x64/org/lwjgl/openal" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-nuklear-natives-windows.jar!/windows/x64/org/lwjgl/nuklear" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-nanovg-natives-windows.jar!/windows/x64/org/lwjgl/nanovg" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-glfw-natives-windows.jar!/windows/x64/org/lwjgl/glfw" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-bgfx-natives-windows.jar!/windows/x64/org/lwjgl/bgfx" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-assimp-natives-windows.jar!/windows/x64/org/lwjgl/assimp" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
