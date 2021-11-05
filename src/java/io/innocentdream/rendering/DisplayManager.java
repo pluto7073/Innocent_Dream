@@ -97,9 +97,11 @@ public class DisplayManager implements Runnable {
             glfwMakeContextCurrent(win);
             glfwPollEvents();
 
+            glOrtho(-WIDTH / 2f, -HEIGHT / 2f, WIDTH / 2f, HEIGHT / 2f, 0, 0);
+            glMatrixMode(GL_MODELVIEW);
             renderer.prepare();
             renderer.render(model);
-
+            InnocentDream.test.draw();
             glfwSwapBuffers(win);
 
             InnocentDream.timer.updateTime();
