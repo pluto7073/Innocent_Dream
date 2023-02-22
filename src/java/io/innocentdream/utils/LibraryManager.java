@@ -116,6 +116,7 @@ public class LibraryManager {
 
     public static void lwjglWindows() {
         File libDir = Utils.newFile("libs\\natives");
+        libDir.mkdirs();
         System.setProperty("org.lwjgl.librarypath", libDir.getAbsolutePath());
         if (!NetworkManager.online) {
             InnocentDream.logger.warn("No internet connection, assuming all libraries are good");

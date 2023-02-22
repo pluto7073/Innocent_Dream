@@ -2,10 +2,7 @@ package io.innocentdream;
 
 import io.innocentdream.objects.GameObject;
 import io.innocentdream.rendering.DisplayManager;
-import io.innocentdream.utils.DiscordManager;
-import io.innocentdream.utils.LibraryManager;
-import io.innocentdream.utils.NetworkManager;
-import io.innocentdream.utils.Timer;
+import io.innocentdream.utils.*;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
@@ -44,6 +41,7 @@ public class InnocentDream implements Runnable {
         BasicConfigurator.configure();
         logger.setLevel(Level.ALL);
         logger.info("Starting Innocent Dream version " + version + "...");
+        Utils.init(args);
         NetworkManager.init();
         LibraryManager.lwjgl();
         discord = new DiscordManager();
