@@ -34,8 +34,12 @@ public class InnocentDream implements Runnable {
     }
 
     public void cleanUp() {
+        logger.debug("Saving Game Properties");
         GamePropertyManager.stop();
+        logger.debug("Done!");
+        logger.debug("Cleaning up temp files");
         Utils.cleanUp();
+        logger.debug("Done!");
     }
 
     public static void main(String[] args) {

@@ -32,6 +32,14 @@ public final class TextureHelper {
 
     public static final Logger LOGGER = LogManager.getLogger("TextureManager");
 
+    public static boolean isTextureLoaded(Identifier i) {
+        return texIds.containsKey(i);
+    }
+
+    public static boolean isTextureLoaded(int i) {
+        return texIds.containsValue(i);
+    }
+
     public static int loadTexture(Identifier id) {
         if (texIds.containsKey(id)) {
             return texIds.get(id);

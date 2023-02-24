@@ -17,6 +17,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 public class LoadScreen extends Screen implements Runnable {
 
@@ -29,8 +30,9 @@ public class LoadScreen extends Screen implements Runnable {
     private boolean startedLoading;
     private boolean doneLoading;
     private final Date date;
+    private final Function<Identifier, ? extends Screen> afterLoadBuilder;
 
-    public LoadScreen() {
+    public LoadScreen(Function<Identifier, ? extends Screen> afterLoadBuilder) {
         super("loading", new int[] { 0, 0, 0, 0 });
         plutoGamesLogo = new GUIObject(-512, -512, 1024, 1024, new Identifier("assets", "gui/pluto-games.png"));
         innocentDreamLogo = new GUIObject(-512, -512, 1024, 1024, new Identifier("assets", "gui/icon/icon-32.png"));
@@ -40,6 +42,7 @@ public class LoadScreen extends Screen implements Runnable {
         this.doneLoading = false;
         this.loadingText = new Text("Loading...");
         this.loadingText.setScale(100f);
+        this.afterLoadBuilder = afterLoadBuilder;
     }
 
     @Override
@@ -48,11 +51,8 @@ public class LoadScreen extends Screen implements Runnable {
     @Override
     public void drawGUI() {
         switch (stage) {
-            case 0 -> {
-                plutoGamesLogo.draw();
-            } case 1,2 -> {
-                innocentDreamLogo.draw();
-            }
+            case 0 -> plutoGamesLogo.draw();
+            case 1, 2 -> innocentDreamLogo.draw();
         }
         loadingText.draw(-loadingText.getWidth() / 2, -512 - loadingText.getHeight() * 2);
     }
@@ -76,7 +76,7 @@ public class LoadScreen extends Screen implements Runnable {
 
         if (stage == 2 && doneLoading) {
             int index = InnocentDream.display.activeScreens.indexOf(this);
-            //TODO Main menu screen;
+            InnocentDream.display.activeScreens.set(index, afterLoadBuilder.apply(new Identifier("innocent_dream", "load")));
         }
     }
 

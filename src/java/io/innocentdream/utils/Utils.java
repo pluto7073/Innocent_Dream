@@ -94,6 +94,12 @@ public final class Utils {
         return file;
     }
 
+    public static float[] convertScreenToPixelCoordinates(float[] screenCoordinates) {
+        float x = screenCoordinates[0] * DisplayManager.WIDTH;
+        float y = screenCoordinates[1] * DisplayManager.HEIGHT;
+        return new float[] { x, y };
+    }
+
     public static float[] convertPixelToScreenCoordinates(float[] pixelCoordinates) {
         float newX = pixelCoordinates[0] / DisplayManager.WIDTH;
         float newY = pixelCoordinates[1] / DisplayManager.HEIGHT;

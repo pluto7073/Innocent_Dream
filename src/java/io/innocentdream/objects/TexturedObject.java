@@ -15,17 +15,19 @@ public abstract class TexturedObject extends GameObject {
         this.texture = texture;
     }
 
-    protected void prepareTexture() {
-        model = InnocentDream.display.loader.loadToVAO(new float[] {
-                aABB.x, aABB.y, 0,
-                aABB.x, aABB.y + aABB.h, 0,
-                aABB.x + aABB.w, aABB.y + aABB.h, 0,
-                aABB.x + aABB.w, aABB.y, 0 }, texCoords);
+    protected int prepareTexture() {
+        return TextureHelper.loadTexture(texture);
     }
 
     @Override
     public void draw() {
-        prepareTexture();
-        InnocentDream.display.renderer.renderTexturedModel(this.model, TextureHelper.loadTexture(texture));
+        if (model == null) {
+            model = InnocentDream.display.loader.loadToVAO(new float[]{
+                    aABB.x, aABB.y, 0,
+                    aABB.x, aABB.y + aABB.h, 0,
+                    aABB.x + aABB.w, aABB.y + aABB.h, 0,
+                    aABB.x + aABB.w, aABB.y, 0}, texCoords);
+        }
+        InnocentDream.display.renderer.renderTexturedModel(this.model, prepareTexture());
     }
 }

@@ -6,10 +6,12 @@ import io.innocentdream.objects.texts.CharacterManager;
 import io.innocentdream.rendering.shaders.GUIShader;
 import io.innocentdream.rendering.shaders.MainShader;
 import io.innocentdream.screens.LoadScreen;
+import io.innocentdream.screens.MainMenuScreen;
 import io.innocentdream.screens.Screen;
 import io.innocentdream.utils.GamePropertyManager;
 import io.innocentdream.utils.Identifier;
 import io.innocentdream.utils.Utils;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
@@ -20,7 +22,9 @@ import org.lwjgl.system.MemoryUtil;
 import java.awt.*;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
+import java.util.Arrays;
 import java.util.Stack;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -41,7 +45,7 @@ public class DisplayManager implements Runnable {
 
     public static DisplayManager create() {
         DisplayManager display = new DisplayManager();
-        display.activeScreens.add(new LoadScreen());
+        display.activeScreens.add(new LoadScreen(MainMenuScreen::new));
         Thread thread = new Thread(display);
         thread.setName("RenderThread");
         thread.start();
@@ -163,13 +167,22 @@ public class DisplayManager implements Runnable {
             renderer.prepare();
             mainShader.start();
 
-            activeScreens.lastElement().drawScreen();
+            try {
+                activeScreens.lastElement().drawScreen();
+            } catch (Exception e) {
+                InnocentDream.logger.error("Exception in drawing screen %s".formatted(activeScreens.lastElement().name), e);
+            }
             Actions.pollActions(activeScreens.lastElement());
 
             mainShader.stop();
             guiShader.start();
 
-            activeScreens.lastElement().drawGUI();
+            try {
+                activeScreens.lastElement().drawGUI();
+            } catch (Exception e) {
+                InnocentDream.logger.error(
+                        "Exception in drawing screen GUI %s".formatted(activeScreens.lastElement().name), e);
+            }
 
             guiShader.stop();
 
@@ -182,9 +195,29 @@ public class DisplayManager implements Runnable {
         InnocentDream.isRunning = false;
     }
 
+    public static float[] getWindowMousePosition() {
+        DoubleBuffer x = BufferUtils.createDoubleBuffer(1);
+        DoubleBuffer y = BufferUtils.createDoubleBuffer(1);
+        glfwMakeContextCurrent(DisplayManager.win);
+        glfwGetCursorPos(DisplayManager.win, x, y);
+        float _x = ((float) x.get(0)) - WIDTH / 2f;
+        float _y = ((float) y.get(0)) - HEIGHT / 2f;
+        InnocentDream.logger.debug(Arrays.toString(new float[] {_x, -_y}));
+        return new float[] { _x, -_y };
+    }
+
+    public static boolean isMouseDown() {
+        glfwMakeContextCurrent(win);
+        return glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS;
+    }
+
     public void cleanUp() {
+        InnocentDream.logger.debug("Unloading models");
         loader.cleanUp();
+        InnocentDream.logger.debug("Done!");
+        InnocentDream.logger.debug("Unloading textures");
         TextureHelper.cleanUp();
+        InnocentDream.logger.debug("Done!");
     }
 
 }
