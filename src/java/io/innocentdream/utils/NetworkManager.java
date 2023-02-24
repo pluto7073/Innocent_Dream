@@ -3,6 +3,7 @@ package io.innocentdream.utils;
 import io.innocentdream.InnocentDream;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 

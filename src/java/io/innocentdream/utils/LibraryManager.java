@@ -1,146 +1,129 @@
 package io.innocentdream.utils;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import io.innocentdream.InnocentDream;
 import net.lingala.zip4j.ZipFile;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Stack;
 
 public class LibraryManager {
 
-    private static final Stack<String> libsToDownload;
+    private static final String BASE_VERSION_INFO_LINK = "https://innocent-dream.web.app/cdn/versions/%s/%s.json";
     private static final OS os;
-    private static final String[] libsWindows = {
-            "assimp.dll", "bgfx.dll", "glfw.dll", "lwjgl.dll", "lwjgl_nanovg.dll",
-            "lwjgl_nuklear.dll", "lwjgl_opengl.dll", "lwjgl_par.dll", "lwjgl_stb.dll",
-            "OpenAL.dll"
-    };
-    private static final String[] libsLinux = {
-            "libassimp.so", "libbgfx.so", "libglfw.so", "liblwjgl.so", "liblwjgl_nanovg.so",
-            "liblwjgl_nuklear.so", "liblwjgl_opengl.so", "liblwjgl_par.so", "liblwjgl_stb.so",
-            "libopenal.so"
-    };
-    private static final String[] libsMac = {
-            "libassimp.dylib", "libbgfx.dylib", "libglfw.dylib", "liblwjgl.dylib", "liblwjgl_nanovg.dylib",
-            "liblwjgl_nuklear.dylib", "liblwjgl_opengl.dylib", "liblwjgl_par.dylib", "liblwjgl_stb.dylib",
-            "libopenal.dylib"
-    };
+    private static final Logger LOGGER = LogManager.getLogger("Library Manager");
 
     static {
-        libsToDownload = new Stack<>();
+        LOGGER.setLevel(Level.ALL);
         if (System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")) {
             os = OS.WINDOWS;
-            libsWindows();
         } else if (System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("linux")) {
             os = OS.LINUX;
-            libsLinux();
         } else if (System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("mac")) {
             os = OS.MAC;
-            libsMac();
         } else os = null;
     }
 
-    private static void libsWindows() {
-        libsToDownload.addAll(List.of(libsWindows));
-    }
-    private static void libsLinux() {
-        libsToDownload.addAll(List.of(libsLinux));
-    }
-    private static void libsMac() {
-        libsToDownload.addAll(List.of(libsMac));
-    }
-
     public static void lwjgl() {
-        switch (os) {
-            case WINDOWS -> lwjglWindows();
-            case LINUX -> lwjglLinux();
-            case MAC -> lwjglMac();
-        }
-    }
-
-    public static void lwjglLinux() {
-        File libDir = Utils.newFile("libs\\natives");
-        System.setProperty("org.lwjgl.librarypath", libDir.getAbsolutePath());
         if (!NetworkManager.online) {
             InnocentDream.logger.warn("No internet connection, assuming all libraries are good");
             return;
         }
-        File[] existing = libDir.listFiles();
-        assert existing != null;
-        for (File f : existing) {
-            libsToDownload.remove(f.getName());
-        }
-        for (String s : libsToDownload) {
-            try {
-                InputStream is = new URL("https://innocent-dream.web.app/cdn/libs/natives/linux/" + s).openStream();
-                File sd = Utils.newFile("libs\\natives\\" + s);
-                Files.copy(is, sd.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                InnocentDream.logger.info("Downloaded " + s + " to " + sd.getAbsolutePath());
-            } catch (IOException e) {
-                InnocentDream.logger.error("An error occurred in downloading " + s, e);
+        String version = InnocentDream.version.toLowerCase();
+        String link = BASE_VERSION_INFO_LINK.formatted(version, version);
+        File infoFile = Utils.newFileInRunDir("versions\\%s\\%s.json".formatted(version, version));
+        infoFile.getParentFile().mkdirs();
+        try {
+            URL url = new URL(link);
+            InputStream stream = url.openStream();
+            Files.write(infoFile.toPath(), stream.readAllBytes());
+            InputStream jsonStream = new FileInputStream(infoFile);
+            JsonObject versionData = JsonHelper.streamToObject(jsonStream);
+            switch (os) {
+                case WINDOWS -> lwjglWindows(versionData);
+                case LINUX -> lwjglLinux(versionData);
+                case MAC -> lwjglMac(versionData);
             }
+        } catch (IOException e) {
+            LOGGER.fatal("Error in loading libraries", e);
+            System.exit(e.hashCode());
         }
+
     }
 
-    public static void lwjglMac() {
-        File libDir = Utils.newFile("libs\\natives");
-        System.setProperty("org.lwjgl.librarypath", libDir.getAbsolutePath());
-        if (!NetworkManager.online) {
-            InnocentDream.logger.warn("No internet connection, assuming all libraries are good");
-            return;
-        }
-        File[] existing = libDir.listFiles();
-        assert existing != null;
-        for (File f : existing) {
-            libsToDownload.remove(f.getName());
-        }
-        for (String s : libsToDownload) {
-            try {
-                InputStream is = new URL("https://innocent-dream.web.app/cdn/libs/natives/mac/" + s).openStream();
-                File sd = Utils.newFile("libs\\natives\\" + s);
-                Files.copy(is, sd.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                InnocentDream.logger.info("Downloaded " + s + " to " + sd.getAbsolutePath());
-            } catch (IOException e) {
-                InnocentDream.logger.error("An error occurred in downloading " + s, e);
-            }
-        }
-    }
-
-    public static void lwjglWindows() {
-        File libDir = Utils.newFile("libs\\natives");
+    public static void lwjglLinux(JsonObject versionData) {
+        File libDir = Utils.newFileInRunDir("libs\\natives");
         libDir.mkdirs();
         System.setProperty("org.lwjgl.librarypath", libDir.getAbsolutePath());
-        if (!NetworkManager.online) {
-            InnocentDream.logger.warn("No internet connection, assuming all libraries are good");
-            return;
-        }
-        File[] existing = libDir.listFiles();
-        assert existing != null;
-        for (File f : existing) {
-            libsToDownload.remove(f.getName());
-        }
-        for (String s : libsToDownload) {
-            try {
-                InputStream is = new URL("https://innocent-dream.web.app/cdn/libs/natives/windows/" + s).openStream();
-                File sd = Utils.newFile("libs\\natives\\" + s);
-                Files.copy(is, sd.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                InnocentDream.logger.info("Downloaded " + s + " to " + sd.getAbsolutePath());
-            } catch (IOException e) {
-                InnocentDream.logger.error("An error occurred in downloading " + s, e);
+        JsonObject librariesData = JsonHelper.getObject(versionData, "libraries");
+        JsonObject nativesData = JsonHelper.getObject(librariesData, "natives");
+        JsonArray linuxNatives = JsonHelper.getArray(nativesData, "linux");
+        verifyLibs(linuxNatives, libDir);
+    }
+
+    public static void lwjglMac(JsonObject versionData) {
+        File libDir = Utils.newFileInRunDir("libs\\natives");
+        libDir.mkdirs();
+        System.setProperty("org.lwjgl.librarypath", libDir.getAbsolutePath());
+        JsonObject librariesData = JsonHelper.getObject(versionData, "libraries");
+        JsonObject nativesData = JsonHelper.getObject(librariesData, "natives");
+        JsonArray macosNatives = JsonHelper.getArray(nativesData, "macos");
+        verifyLibs(macosNatives, libDir);
+    }
+
+    public static void lwjglWindows(JsonObject versionData) {
+        File libDir = Utils.newFileInRunDir("libs\\natives");
+        libDir.mkdirs();
+        System.setProperty("org.lwjgl.librarypath", libDir.getAbsolutePath());
+        JsonObject librariesData = JsonHelper.getObject(versionData, "libraries");
+        JsonObject nativesData = JsonHelper.getObject(librariesData, "natives");
+        JsonArray windowsNatives = JsonHelper.getArray(nativesData, "windows");
+        verifyLibs(windowsNatives, libDir);
+    }
+
+    private static void verifyLibs(JsonArray natives, File libDir) {
+        natives.forEach(element -> {
+            if (!(element instanceof JsonObject nativeData)) {
+                return;
             }
+            String downloadLink = JsonHelper.getString(nativeData, "download");
+            String name = JsonHelper.getString(nativeData, "name");
+            long size = JsonHelper.getLong(nativeData, "size");
+            File target = new File(libDir, name);
+            if (!target.exists() || target.length() != size) {
+                downloadLib(downloadLink, target);
+            }
+        });
+    }
+
+    private static void downloadLib(String downloadLink, File target) {
+        try {
+            InputStream is = new URL(downloadLink).openStream();
+            Files.copy(is, target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            LOGGER.info("Downloaded %s to %s".formatted(target.getName(), target.getAbsolutePath()));
+        } catch (IOException e) {
+            LOGGER.error("Failed to download %s from %s".formatted(target.getName(), downloadLink), e);
         }
     }
 
     public static File discord() {
-        File discordFolder = Utils.newFile("libs\\natives\\discord");
+        File discordFolder = Utils.newFileInRunDir("libs\\natives\\discord");
         if (!discordFolder.exists()) {
             try {
                 InputStream is = new URL("https://innocent-dream.web.app/cdn/libs/natives/discord.zip").openStream();
@@ -154,9 +137,9 @@ public class LibraryManager {
         }
         String base = "libs\\natives\\discord\\lib\\x86_64\\discord_game_sdk";
         return switch (os) {
-            case WINDOWS -> Utils.newFile(base + ".dll");
-            case LINUX -> Utils.newFile(base + ".so");
-            case MAC -> Utils.newFile(base + ".dylib");
+            case WINDOWS -> Utils.newFileInRunDir(base + ".dll");
+            case LINUX -> Utils.newFileInRunDir(base + ".so");
+            case MAC -> Utils.newFileInRunDir(base + ".dylib");
         };
     }
 

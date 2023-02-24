@@ -44,11 +44,6 @@ public class DiscordManager implements Runnable {
         while (true) {
             core.activityManager().updateActivity(activity);
             core.runCallbacks();
-            try {
-                Thread.sleep(16);
-            } catch (InterruptedException e) {
-                InnocentDream.logger.error("Something went wrong when delaying thread", e);
-            }
         }
     }
 

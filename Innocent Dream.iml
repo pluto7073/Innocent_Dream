@@ -30,7 +30,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/jars/gson-2.8.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/libs/jars/gson-2.10.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -39,7 +39,18 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/jars/intellij-ui-designer.jar!/" />
+          <root url="jar://$MODULE_DIR$/libs/jars/joml-1.10.5.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/libs/docs/joml-1.10.5-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/jars/log4j-1.2-api-2.20.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -48,7 +59,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/jars/joml-1.10.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/libs/jars/log4j-api-2.20.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -57,25 +68,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/jars/log4j-1.2-api-2.14.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/jars/log4j-api-2.14.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/jars/log4j-core-2.14.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/libs/jars/log4j-core-2.20.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -86,7 +79,9 @@
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/jars/lwjgl-assimp.jar!/" />
         </CLASSES>
-        <JAVADOC />
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/libs/docs/lwjgl-assimp-javadoc.jar!/" />
+        </JAVADOC>
         <SOURCES />
       </library>
     </orderEntry>
@@ -95,7 +90,9 @@
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/jars/lwjgl-bgfx.jar!/" />
         </CLASSES>
-        <JAVADOC />
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/libs/docs/lwjgl-bgfx-javadoc.jar!/" />
+        </JAVADOC>
         <SOURCES />
       </library>
     </orderEntry>
@@ -104,7 +101,9 @@
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/jars/lwjgl-glfw.jar!/" />
         </CLASSES>
-        <JAVADOC />
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/libs/docs/lwjgl-glfw-javadoc.jar!/" />
+        </JAVADOC>
         <SOURCES />
       </library>
     </orderEntry>
@@ -113,7 +112,9 @@
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/jars/lwjgl-nanovg.jar!/" />
         </CLASSES>
-        <JAVADOC />
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/libs/docs/lwjgl-nanovg-javadoc.jar!/" />
+        </JAVADOC>
         <SOURCES />
       </library>
     </orderEntry>
@@ -122,7 +123,9 @@
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/jars/lwjgl-nuklear.jar!/" />
         </CLASSES>
-        <JAVADOC />
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/libs/docs/lwjgl-nuklear-javadoc.jar!/" />
+        </JAVADOC>
         <SOURCES />
       </library>
     </orderEntry>
@@ -131,7 +134,9 @@
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/jars/lwjgl-openal.jar!/" />
         </CLASSES>
-        <JAVADOC />
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/libs/docs/lwjgl-openal-javadoc.jar!/" />
+        </JAVADOC>
         <SOURCES />
       </library>
     </orderEntry>
@@ -140,7 +145,9 @@
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/jars/lwjgl-opengl.jar!/" />
         </CLASSES>
-        <JAVADOC />
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/libs/docs/lwjgl-opengl-javadoc.jar!/" />
+        </JAVADOC>
         <SOURCES />
       </library>
     </orderEntry>
@@ -149,7 +156,9 @@
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/jars/lwjgl-par.jar!/" />
         </CLASSES>
-        <JAVADOC />
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/libs/docs/lwjgl-par-javadoc.jar!/" />
+        </JAVADOC>
         <SOURCES />
       </library>
     </orderEntry>
@@ -158,7 +167,9 @@
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/jars/lwjgl-stb.jar!/" />
         </CLASSES>
-        <JAVADOC />
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/libs/docs/lwjgl-stb-javadoc.jar!/" />
+        </JAVADOC>
         <SOURCES />
       </library>
     </orderEntry>
@@ -167,7 +178,9 @@
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/jars/lwjgl-vulkan.jar!/" />
         </CLASSES>
-        <JAVADOC />
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/libs/docs/lwjgl-vulkan-javadoc.jar!/" />
+        </JAVADOC>
         <SOURCES />
       </library>
     </orderEntry>
@@ -176,7 +189,9 @@
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/jars/lwjgl.jar!/" />
         </CLASSES>
-        <JAVADOC />
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/libs/docs/lwjgl-javadoc.jar!/" />
+        </JAVADOC>
         <SOURCES />
       </library>
     </orderEntry>
@@ -192,88 +207,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/jars/zip4j-2.6.4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-stb-natives-windows.jar!/windows/x64/org/lwjgl/stb" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-par-natives-windows.jar!/windows/x64/org/lwjgl/par" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-opengl-natives-windows.jar!/windows/x64/org/lwjgl/opengl" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-openal-natives-windows.jar!/windows/x64/org/lwjgl/openal" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-nuklear-natives-windows.jar!/windows/x64/org/lwjgl/nuklear" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-nanovg-natives-windows.jar!/windows/x64/org/lwjgl/nanovg" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-glfw-natives-windows.jar!/windows/x64/org/lwjgl/glfw" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-bgfx-natives-windows.jar!/windows/x64/org/lwjgl/bgfx" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/hosting/cdn/libs/natives/windows/lwjgl-assimp-natives-windows.jar!/windows/x64/org/lwjgl/assimp" />
+          <root url="jar://$MODULE_DIR$/libs/jars/zip4j-2.11.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

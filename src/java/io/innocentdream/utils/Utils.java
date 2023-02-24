@@ -1,22 +1,20 @@
 package io.innocentdream.utils;
 
 import io.innocentdream.InnocentDream;
+import io.innocentdream.rendering.DisplayManager;
 import io.innocentdream.rendering.ResourceManager;
 import org.lwjgl.BufferUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.SeekableByteChannel;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.nio.file.*;
+import java.util.*;
+import java.util.function.Supplier;
 
 import static org.lwjgl.BufferUtils.createByteBuffer;
 
@@ -24,6 +22,10 @@ public final class Utils {
 
     public static File RUN_DIR;
     public static final Map<String, String> RUN_ARGS = new HashMap<>();
+
+    private static final float CONSTANT_MODIFIER_X = 256f / 3840f;
+    private static final float CONSTANT_MODIFIER_Y = 256f / 2160f;
+    private static final List<File> TEMP_FILES = new ArrayList<>();
 
     private Utils() {}
 
@@ -52,32 +54,63 @@ public final class Utils {
      * Reads the specified resource and returns the raw data as a ByteBuffer.
      *
      * @param resource   the resource to read
-     * @param bufferSize the initial buffer size
      *
      * @return the resource data
      *
      * @throws IOException if an IO error occurs
      */
-    public static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException {
+    public static ByteBuffer ioResourceToByteBuffer(Identifier resource) throws IOException {
+        return inputStreamToByteBuffer(ResourceManager.get(resource).get());
+    }
+
+    public static ByteBuffer inputStreamToByteBuffer(InputStream stream) throws IOException {
         ByteBuffer buffer;
 
-        try (
-                InputStream source = ResourceManager.RESOURCES.get(resource).get();
-                ReadableByteChannel rbc = Channels.newChannel(source)
-        ) {
-            buffer = createByteBuffer(bufferSize);
+        ReadableByteChannel rbc = Channels.newChannel(stream);
+        buffer = createByteBuffer(1);
 
-            while (true) {
-                int bytes = rbc.read(buffer);
-                if ( bytes == -1 )
-                    break;
-                if ( buffer.remaining() == 0 )
-                    buffer = resizeBuffer(buffer, buffer.capacity() * 2);
-                }
+        while (true) {
+            int bytes = rbc.read(buffer);
+            if ( bytes == -1 ) {
+                break;
             }
+            if (buffer.remaining() == 0) {
+                buffer = resizeBuffer(buffer, buffer.capacity() * 2);
+            }
+        }
 
         buffer.flip();
         return buffer;
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static File createTempFile(String name) throws IOException {
+        File tempFolder = newFileInRunDir("temp");
+        tempFolder.mkdirs();
+        File file = new File(tempFolder, name);
+        file.getParentFile().mkdirs();
+        file.createNewFile();
+        TEMP_FILES.add(file);
+        return file;
+    }
+
+    public static float[] convertPixelToScreenCoordinates(float[] pixelCoordinates) {
+        float newX = pixelCoordinates[0] / DisplayManager.WIDTH;
+        float newY = pixelCoordinates[1] / DisplayManager.HEIGHT;
+        return new float[] { newX, newY };
+    }
+
+    public static float[] convertWorldToScreenCoordinates(float[] worldCoordinates) {
+        float[] pixelCoords = convertWorldToPixelCoordinates(worldCoordinates);
+        return convertPixelToScreenCoordinates(pixelCoords);
+    }
+
+    public static float[] convertWorldToPixelCoordinates(float[] worldCoordinates) {
+        float modX = CONSTANT_MODIFIER_X * DisplayManager.WIDTH;
+        float modY = CONSTANT_MODIFIER_Y * DisplayManager.HEIGHT;
+        float newX = worldCoordinates[0] * modX;
+        float newY = worldCoordinates[1] * modY;
+        return new float[] { newX, newY };
     }
 
     public static String generateUID(Random random) {
@@ -138,6 +171,36 @@ public final class Utils {
         return false;
     }
 
+    public static int countArrayOccurrences(Object[] array, Object object) {
+        int count = 0;
+        for (Object t : array) {
+            if (t.equals(object)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static int countArrayOccurrences(int[] array, int object) {
+        int count = 0;
+        for (int i : array) {
+            if (i == object) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static int countArrayOccurrences(char[] array, char character) {
+        int count = 0;
+        for (char c : array) {
+            if (c == character) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     /**
      * Finds the index of an object in an array
      * @param array The array to look in
@@ -153,6 +216,34 @@ public final class Utils {
             }
         }
         return -1;
+    }
+
+    @SuppressWarnings("DuplicateExpressions")
+    public static Path getPath(URI uri) throws IOException {
+        try {
+            return Paths.get(uri);
+        } catch (FileSystemNotFoundException ignored) {
+        } catch (Throwable e) {
+            InnocentDream.logger.warn("Unable to get path for: " + uri, e);
+        }
+
+        try {
+            FileSystems.newFileSystem(uri, Collections.emptyMap());
+        } catch (FileSystemAlreadyExistsException ignored) {
+        }
+        return Paths.get(uri);
+    }
+
+    public static <T> T make(Supplier<T> supplier) {
+        return supplier.get();
+    }
+
+    public static void cleanUp() {
+        for (File f : TEMP_FILES) {
+            if (f.exists()) {
+                f.delete();
+            }
+        }
     }
 
     public static void init(String[] args) {

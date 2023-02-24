@@ -1,14 +1,27 @@
 package io.innocentdream.rendering;
 
 import io.innocentdream.InnocentDream;
+import io.innocentdream.actions.Actions;
+import io.innocentdream.objects.texts.CharacterManager;
+import io.innocentdream.rendering.shaders.GUIShader;
+import io.innocentdream.rendering.shaders.MainShader;
+import io.innocentdream.screens.LoadScreen;
+import io.innocentdream.screens.Screen;
+import io.innocentdream.utils.GamePropertyManager;
+import io.innocentdream.utils.Identifier;
 import io.innocentdream.utils.Utils;
 import org.lwjgl.glfw.GLFWImage;
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWWindowSizeCallback;
+import org.lwjgl.glfw.GLFWWindowSizeCallbackI;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryUtil;
 
+import java.awt.*;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.Stack;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.stb.STBImage.*;
@@ -22,15 +35,20 @@ public class DisplayManager implements Runnable {
 
     public ModelLoader loader;
     public Renderer renderer;
+    public Stack<Screen> activeScreens = new Stack<>();
+    public MainShader mainShader;
+    public GUIShader guiShader;
 
     public static DisplayManager create() {
         DisplayManager display = new DisplayManager();
+        display.activeScreens.add(new LoadScreen());
         Thread thread = new Thread(display);
         thread.setName("RenderThread");
         thread.start();
         return display;
     }
 
+    @SuppressWarnings("resource")
     @Override
     public void run() {
         if (!glfwInit()) {
@@ -41,18 +59,31 @@ public class DisplayManager implements Runnable {
         loader = new ModelLoader();
         renderer = new Renderer();
 
-        WIDTH = 1024;
-        HEIGHT = 678;
+        long monitor = glfwGetPrimaryMonitor();
+        GLFWVidMode mode = glfwGetVideoMode(monitor);
 
-        win = glfwCreateWindow(WIDTH, HEIGHT, "Window", 0, 0);
+        if (GamePropertyManager.getFullscreenProperty()) {
+            glfwWindowHint(GLFW_RED_BITS, mode.redBits());
+            glfwWindowHint(GLFW_GREEN_BITS, mode.greenBits());
+            glfwWindowHint(GLFW_BLUE_BITS, mode.blueBits());
+            glfwWindowHint(GLFW_REFRESH_RATE, mode.refreshRate());
+            WIDTH = mode.width();
+            HEIGHT = mode.height();
+            win = glfwCreateWindow(WIDTH, HEIGHT, "Window", monitor, 0);
+        } else {
+            WIDTH = 1024;
+            HEIGHT = 678;
+            win = glfwCreateWindow(WIDTH, HEIGHT, "Window", 0, 0);
+        }
 
         ByteBuffer icon16;
         ByteBuffer icon32;
         try {
-            icon16 = Utils.ioResourceToByteBuffer("icon-16.png", 2048);
-            icon32 = Utils.ioResourceToByteBuffer("icon-32.png", 4096);
+            icon16 = Utils.inputStreamToByteBuffer(getClass().getClassLoader().getResourceAsStream("assets/gui/icon/icon-16.png"));
+            icon32 = Utils.inputStreamToByteBuffer(getClass().getClassLoader().getResourceAsStream("assets/gui/icon/icon-32.png"));
         } catch (Exception e) {
             InnocentDream.logger.error("An error occurred in loading the window icon", e);
+            System.exit(e.hashCode());
             return;
         }
         IntBuffer w = MemoryUtil.memAllocInt(1);
@@ -76,11 +107,42 @@ public class DisplayManager implements Runnable {
         }
 
         glfwSetWindowTitle(win, "Innocent Dream - " + InnocentDream.version);
+
+        glfwSetWindowSizeCallback(win, (win, width, height) -> {
+            glViewport(0, 0, width, height);
+            WIDTH = width;
+            HEIGHT = height;
+        });
+
         glfwMakeContextCurrent(win);
         GL.createCapabilities();
         glfwMakeContextCurrent(win);
         glfwShowWindow(win);
+        mainShader = new MainShader();
+        guiShader = new GUIShader();
         loop();
+    }
+
+    public void goFullscreen() {
+        glfwMakeContextCurrent(win);
+        long monitor = glfwGetPrimaryMonitor();
+        GLFWVidMode mode = glfwGetVideoMode(monitor);
+        WIDTH = mode.width();
+        HEIGHT = mode.height();
+        glfwSetWindowMonitor(win, monitor, 0, 0, WIDTH, HEIGHT, mode.refreshRate());
+    }
+
+    public void goWindowed() {
+        glfwMakeContextCurrent(win);
+        long monitor = glfwGetWindowMonitor(win);
+        GLFWVidMode mode = glfwGetVideoMode(monitor);
+        double scale = GamePropertyManager.getScaleProperty();
+        Dimension dim = new Dimension(mode.width(), mode.height());
+        WIDTH = (int) (1024 * scale);
+        HEIGHT = (int) (678 * scale);
+        int x = dim.width / 2 - WIDTH / 2;
+        int y = dim.height / 2 - HEIGHT / 2;
+        glfwSetWindowMonitor(win, 0, x, y, WIDTH, HEIGHT, 1);
     }
 
     private void loop() {
@@ -89,28 +151,40 @@ public class DisplayManager implements Runnable {
         glClear(GL_COLOR_BUFFER_BIT);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        Model model = loader.loadToVAO(new float[] {
-                -0.5f, -0.5f, -0.5f, 0.5f,
-                0.5f, 0.5f, 0.5f, -0.5f
-        });
+        ResourceManager.init();
+        CharacterManager.loadCharacters();
         while (!glfwWindowShouldClose(win)) {
             glfwMakeContextCurrent(win);
+
+            activeScreens.lastElement().drawBackground();
+
             glfwPollEvents();
 
-            glOrtho(-WIDTH / 2f, -HEIGHT / 2f, WIDTH / 2f, HEIGHT / 2f, 0, 0);
-            glMatrixMode(GL_MODELVIEW);
             renderer.prepare();
-            renderer.render(model);
-            InnocentDream.test.draw();
+            mainShader.start();
+
+            activeScreens.lastElement().drawScreen();
+            Actions.pollActions(activeScreens.lastElement());
+
+            mainShader.stop();
+            guiShader.start();
+
+            activeScreens.lastElement().drawGUI();
+
+            guiShader.stop();
+
+
             glfwSwapBuffers(win);
 
             InnocentDream.timer.updateTime();
         }
+        cleanUp();
         InnocentDream.isRunning = false;
     }
 
     public void cleanUp() {
         loader.cleanUp();
+        TextureHelper.cleanUp();
     }
 
 }

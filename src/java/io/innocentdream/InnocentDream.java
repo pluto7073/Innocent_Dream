@@ -1,18 +1,19 @@
 package io.innocentdream;
 
-import io.innocentdream.objects.GameObject;
+import io.innocentdream.mods.ModLoader;
+import io.innocentdream.objects.texts.CharacterManager;
 import io.innocentdream.rendering.DisplayManager;
+import io.innocentdream.rendering.ResourceManager;
+import io.innocentdream.rendering.TextureHelper;
+import io.innocentdream.screens.LoadScreen;
 import io.innocentdream.utils.*;
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import java.awt.*;
-
 public class InnocentDream implements Runnable {
 
-    public static final String version = "LT-19102021";
+    public static final String version = "LT-2023.0.0";
     public static volatile boolean isRunning = false;
 
     public static final Logger logger = LogManager.getLogger("InnocentDream");
@@ -20,34 +21,37 @@ public class InnocentDream implements Runnable {
     public static DisplayManager display;
     public static Timer timer;
 
-    public static GameObject test = new GameObject(0, -1000, 10, 10, new Color(0x00FFAA)) {
-        @Override
-        public void update() {
-            this.aABB.x += 1 * InnocentDream.timer.getTimeDifference();
-        }
-    };
-
     @Override
     public void run() {
         isRunning = true;
         display = DisplayManager.create();
         while (isRunning) {
-            test.update();
+            display.activeScreens.lastElement().tick();
         }
+        cleanUp();
+        logger.info("Stopping Game...");
         System.exit(0);
     }
 
+    public void cleanUp() {
+        GamePropertyManager.stop();
+        Utils.cleanUp();
+    }
+
     public static void main(String[] args) {
-        BasicConfigurator.configure();
         logger.setLevel(Level.ALL);
         logger.info("Starting Innocent Dream version " + version + "...");
         Utils.init(args);
         NetworkManager.init();
         LibraryManager.lwjgl();
+        GamePropertyManager.start();
+        LoadScreen.addTask(new ResourceManager());
+        LoadScreen.addTask(new CharacterManager());
+        LoadScreen.addTask(new ModLoader());
         discord = new DiscordManager();
         timer = new Timer();
         Thread thread = new Thread(new InnocentDream());
-        thread.setName("MAIN");
+        thread.setName("main");
         thread.start();
     }
 

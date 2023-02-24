@@ -15,19 +15,21 @@ public class Resource {
     }
 
     private final InputStream stream;
-    private final Type type;
+    private final String path;
+    private final String namespace;
 
-    public Resource(Type type, String path) {
+    public Resource(String path, String namespace) {
         stream = this.getClass().getClassLoader().getResourceAsStream(path);
-        this.type = type;
+        this.path = path;
+        this.namespace = namespace;
     }
 
-    public Type getType() {
-        return type;
+    public String getNamespace() {
+        return namespace;
     }
 
     public InputStream get() {
-        return stream;
+        return this.getClass().getClassLoader().getResourceAsStream(path);
     }
 
 }

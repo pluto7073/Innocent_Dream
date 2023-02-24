@@ -13,11 +13,22 @@ public abstract class GameObject {
 
     public final AABB aABB;
     private Color colour;
-    private Model model;
+    protected Model model;
+    protected float[] texCoords;
 
     public GameObject(int x, int y, int w, int h, Color colour) {
         this.aABB = new AABB(x, y, w, h);
         this.colour = colour;
+        texCoords = new float[] {
+                0, 1,
+                0, 0,
+                1, 0,
+                1, 1
+        };
+    }
+
+    public GameObject(int x, int y, int w, int h) {
+        this(x, y, w, h, new Color(0));
     }
 
     public Color getColour() { return colour; }
