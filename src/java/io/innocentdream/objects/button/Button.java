@@ -78,7 +78,7 @@ public class Button extends GUIObject {
     @Override
     public void update() {
         float[] mousePos = DisplayManager.getWindowMousePosition();
-        if (this.aABB.test(new AABB((int) mousePos[0], (int) mousePos[1], 0, 0))) {
+        if (this.aABB.test(new AABB((int) mousePos[0], (int) mousePos[1], 1, 1))) {
             if (DisplayManager.isMouseDown()) {
                 isClicked = true;
             } else {
