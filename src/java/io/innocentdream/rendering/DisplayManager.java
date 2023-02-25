@@ -198,11 +198,15 @@ public class DisplayManager implements Runnable {
     public static float[] getWindowMousePosition() {
         DoubleBuffer x = BufferUtils.createDoubleBuffer(1);
         DoubleBuffer y = BufferUtils.createDoubleBuffer(1);
+        IntBuffer width = BufferUtils.createIntBuffer(1);
+        IntBuffer height = BufferUtils.createIntBuffer(1);
         glfwMakeContextCurrent(DisplayManager.win);
         glfwGetCursorPos(DisplayManager.win, x, y);
-        float _x = ((float) x.get(0)) - WIDTH / 2f;
-        float _y = ((float) y.get(0)) - HEIGHT / 2f;
-        InnocentDream.logger.debug(Arrays.toString(new float[] {_x, -_y}));
+        glfwGetWindowSize(win, width, height);
+        int w = width.get(0);
+        int h = height.get(0);
+        float _x = ((float) x.get(0)) - w / 2f;
+        float _y = ((float) y.get(0)) - h / 2f;
         return new float[] { _x, -_y };
     }
 
