@@ -25,6 +25,8 @@ public final class Utils {
 
     private static final float CONSTANT_MODIFIER_X = 256f / 3840f;
     private static final float CONSTANT_MODIFIER_Y = 256f / 2160f;
+    private static final int DESIRED_WIDTH = 3840;
+    private static final int DESIRED_HEIGHT = 2160;
     private static final List<File> TEMP_FILES = new ArrayList<>();
 
     private Utils() {}
@@ -101,9 +103,9 @@ public final class Utils {
     }
 
     public static float[] convertPixelToScreenCoordinates(float[] pixelCoordinates) {
-        float newX = pixelCoordinates[0] / DisplayManager.WIDTH;
-        float newY = pixelCoordinates[1] / DisplayManager.HEIGHT;
-        return new float[] { newX, newY };
+        float x = pixelCoordinates[0] / DisplayManager.WIDTH;
+        float y = pixelCoordinates[1] / DisplayManager.HEIGHT;
+        return new float[] { x, y };
     }
 
     public static float[] convertWorldToScreenCoordinates(float[] worldCoordinates) {
