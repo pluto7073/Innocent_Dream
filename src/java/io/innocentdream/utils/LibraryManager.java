@@ -26,7 +26,7 @@ import java.util.Stack;
 public class LibraryManager {
 
     private static final String BASE_VERSION_INFO_LINK = "https://innocent-dream.web.app/cdn/versions/%s/%s.json";
-    private static final OS os;
+    public static final OS os;
     private static final Logger LOGGER = LogManager.getLogger("Library Manager");
 
     static {
@@ -143,7 +143,7 @@ public class LibraryManager {
         };
     }
 
-    private enum OS {
+    public enum OS {
         WINDOWS,
         LINUX,
         MAC
