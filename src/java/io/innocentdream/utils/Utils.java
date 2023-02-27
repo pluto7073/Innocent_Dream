@@ -242,6 +242,27 @@ public final class Utils {
         return Paths.get(uri);
     }
 
+    public static Float[] convertToClassArray(float[] array) {
+        Float[] arr = new Float[array.length];
+        for (int i = 0; i < array.length; i++) {
+            arr[i] = array[i];
+        }
+        return arr;
+    }
+
+    public static float[] join (float[] arr1, float[] arr2) {
+        float[] arr3 = new float[arr1.length + arr2.length];
+        int i;
+        for (i = 0; i < arr1.length; i++) {
+            arr3[i] = arr1[i];
+        }
+        for (float f : arr2) {
+            arr3[i] = f;
+            i++;
+        }
+        return arr3;
+    }
+
     public static <T> T make(Supplier<T> supplier) {
         return supplier.get();
     }
@@ -265,6 +286,18 @@ public final class Utils {
         }
 
         setupRunDir();
+    }
+
+    public static class BiHolder<T, N> {
+        public T item1;
+        public N item2;
+        public BiHolder(T t, N n) {
+            this.item1 = t;
+            this.item2 = n;
+        }
+
+        public BiHolder() {}
+
     }
 
 }

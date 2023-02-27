@@ -34,8 +34,8 @@ public class LoadScreen extends Screen implements Runnable {
 
     public LoadScreen(Function<Identifier, ? extends Screen> afterLoadBuilder) {
         super("loading", new int[] { 0, 0, 0, 0 });
-        plutoGamesLogo = new GUIObject(-512, -512, 1024, 1024, new Identifier("assets", "gui/pluto-games.png"));
-        innocentDreamLogo = new GUIObject(-512, -512, 1024, 1024, new Identifier("assets", "gui/icon/icon-32.png"));
+        this.plutoGamesLogo = new GUIObject(-512, -512, 1024, 1024, new Identifier("assets", "gui/pluto-games.png"));
+        this.innocentDreamLogo = new GUIObject(-512, -512, 1024, 1024, new Identifier("assets", "gui/icon/icon-32.png"));
         this.date = new Date();
         this.stage = 0;
         this.startedLoading = false;
@@ -51,14 +51,18 @@ public class LoadScreen extends Screen implements Runnable {
     @Override
     public void drawGUI() {
         switch (stage) {
-            case 0 -> plutoGamesLogo.draw();
-            case 1, 2 -> innocentDreamLogo.draw();
+            case 0 -> this.plutoGamesLogo.draw();
+            case 1, 2 -> this.innocentDreamLogo.draw();
         }
-        loadingText.draw(-loadingText.getWidth() / 2, -512 - loadingText.getHeight() * 2);
+        this.loadingText.draw(-loadingText.getWidth() / 2, -512 - loadingText.getHeight() * 2);
     }
 
     @Override
     public void tick() {
+        switch (stage) {
+            case 0 -> this.plutoGamesLogo.update();
+            case 1, 2 -> this.innocentDreamLogo.update();
+        }
         if (checkTime(5000) && stage == 0) {
             stage = 1;
         }

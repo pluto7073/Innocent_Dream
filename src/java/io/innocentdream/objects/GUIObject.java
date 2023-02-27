@@ -19,13 +19,13 @@ public class GUIObject extends TexturedObject {
         float[] closeCorner = Utils.convertPixelToScreenCoordinates(new float[] { aABB.x, aABB.y });
         float[] farCorner = Utils.convertPixelToScreenCoordinates(new float[] { aABB.x + aABB.w, aABB.y + aABB.h });
         if (!loaded) {
-            m = InnocentDream.display.loader.loadToVAO(new float[]{
+            this.m = InnocentDream.display.loader.loadToVAO(new float[]{
                     closeCorner[0], closeCorner[1],
                     closeCorner[0], farCorner[1],
                     farCorner[0], farCorner[1],
                     farCorner[0], closeCorner[1]
             });
-            loaded = true;
+            this.loaded = true;
         }
         InnocentDream.display.renderer.renderGuiObject(m, prepareTexture());
     }
