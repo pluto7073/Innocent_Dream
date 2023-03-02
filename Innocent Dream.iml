@@ -6,6 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/res" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/run" />
+      <excludeFolder url="file://$MODULE_DIR$/hosting" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -32,7 +33,9 @@
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/jars/gson-2.10.1.jar!/" />
         </CLASSES>
-        <JAVADOC />
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/libs/docs/gson-2.10.1-javadoc.jar!/" />
+        </JAVADOC>
         <SOURCES />
       </library>
     </orderEntry>
