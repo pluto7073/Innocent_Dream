@@ -25,20 +25,20 @@ public class Button extends GUIObject {
     private final List<ButtonListener> clickListeners;
     private final Text text;
 
-    public Button(int x, int y, float scale, Text text) {
-        super(x, y, (int) (64 * scale), (int) (16 * scale), new Identifier("assets", "gui/button.png"));
+    public Button(int x, int y, int w, int h, Text text) {
+        super(x, y, w, h, new Identifier("assets", "gui/button.png"));
         this.isSelected = false;
         this.isClicked = false;
         this.clickListeners = new ArrayList<>();
         this.text = text;
-        this.text.setScale(12.0F * scale);
+        this.text.setScale(12.0F * (w / 64F));
     }
 
     @Override
     public void draw() {
         super.draw();
-        text.draw((this.aABB.x + this.aABB.w) - (this.text.getWidth() / 2F),
-                (this.aABB.y + this.aABB.h) - (this.text.getHeight() / 2));
+        text.draw((this.aABB.x + this.aABB.w) / 2 - (this.text.getWidth() / 2F),
+                (this.aABB.y + this.aABB.h) / 2 - (this.text.getHeight() / 2));
     }
 
     @Override
