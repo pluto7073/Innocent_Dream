@@ -49,6 +49,7 @@ public class GamePropertyManager {
         //MISC
         PROPERTIES.put("fullscreen", "true");
         PROPERTIES.put("scale", "1.0");
+        PROPERTIES.put("lang", "en_us");
 
         //KEYS
         PROPERTIES.put("key_fullscreen", String.valueOf(GLFW.GLFW_KEY_F5));
@@ -80,6 +81,10 @@ public class GamePropertyManager {
 
     public static double getScaleProperty() {
         return Double.parseDouble((String) getOrDefault("scale", 1.0));
+    }
+
+    public static String getLanguageProperty() {
+        return (String) getOrDefault("lang", "en_us");
     }
 
     //KEY CODES

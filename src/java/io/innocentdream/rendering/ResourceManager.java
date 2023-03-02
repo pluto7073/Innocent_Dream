@@ -2,6 +2,7 @@ package io.innocentdream.rendering;
 
 import io.innocentdream.objects.texts.CharacterManager;
 import io.innocentdream.utils.Identifier;
+import io.innocentdream.utils.LanguageManager;
 import io.innocentdream.utils.Task;
 import io.innocentdream.utils.Utils;
 import org.apache.log4j.Level;
@@ -89,6 +90,7 @@ public class ResourceManager implements Task {
                 Resource resource = new Resource(id.getNamespace() + "/" + id.getPath(), id.getNamespace());
                 RESOURCES.put(id, resource);
             });
+            LanguageManager.load();
         } catch (IOException e) {
             LOGGER.error("Could not reload resources", e);
         }
@@ -111,6 +113,6 @@ public class ResourceManager implements Task {
 
     @Override
     public String getTaskName() {
-        return "Loading Resources";
+        return "id.loading.resources";
     }
 }

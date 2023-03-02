@@ -49,6 +49,6 @@ public class ModLoader implements Task {
 
     @Override
     public String getTaskName() {
-        return "Loading Mods";
+        return "id.loading.mods";
     }
 }

@@ -207,7 +207,7 @@ public class DisplayManager implements Runnable {
         int h = height.get(0);
         float _x = ((float) x.get(0)) - w / 2f;
         float _y = ((float) y.get(0)) - h / 2f;
-        return new float[] { _x, -_y };
+        return new float[] { _x * 2, -_y * 2 };
     }
 
     public static boolean isMouseDown() {

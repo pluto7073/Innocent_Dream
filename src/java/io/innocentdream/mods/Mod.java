@@ -1,6 +1,7 @@
 package io.innocentdream.mods;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
@@ -55,9 +56,9 @@ public class Mod {
         } catch (MalformedURLException e) {
             throw new ModInitializationException("Error in loading classes from mod %s: %s".formatted(id, e.getMessage()));
         }
-        for (Object s : mainEntries) {
+        for (JsonElement s : mainEntries) {
             try {
-                Class<? extends ModInitializer> modClass = (Class<? extends ModInitializer>) Class.forName(s.toString(), true, loader);
+                Class<? extends ModInitializer> modClass = (Class<? extends ModInitializer>) Class.forName(s.getAsString(), true, loader);
                 ModInitializer initializer = modClass.getConstructor().newInstance();
                 initializer.onInitialize();
             } catch (ClassNotFoundException e) {

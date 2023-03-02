@@ -66,6 +66,6 @@ public class CharacterManager implements Task {
 
     @Override
     public String getTaskName() {
-        return "Deconstructing Fonts";
+        return "id.loading.fonts";
     }
 }
