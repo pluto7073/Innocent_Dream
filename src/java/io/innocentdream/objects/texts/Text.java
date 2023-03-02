@@ -1,47 +1,33 @@
 package io.innocentdream.objects.texts;
 
 import io.innocentdream.objects.GUIObject;
+import io.innocentdream.utils.LanguageManager;
 import io.innocentdream.utils.Utils;
 
-public class Text {
+public abstract class Text {
 
-    private char[] charArray;
     private float charSize;
 
-    public Text(String s) {
-        this(s.toCharArray());
-    }
-
-    public Text(char[] charArray) {
-        this(charArray, 1f);
-    }
-
-    public Text(char[] charArray, float scale) {
-        this.charArray = charArray;
+    private Text(float scale) {
         this.charSize = scale;
     }
 
-    public void setText(char[] charArray) {
-        this.charArray = charArray;
-    }
+    public abstract char[] getCharArray();
 
-    public void setText(String s) {
-        setText(s.toCharArray());
-    }
-
-    public void setScale(float scale) {
+    public Text setScale(float scale) {
         this.charSize = scale;
+        return this;
     }
 
     public int getTotalLines() {
-        return Utils.countArrayOccurrences(charArray, '\n') + 1;
+        return Utils.countArrayOccurrences(getCharArray(), '\n') + 1;
     }
 
     public float getWidth() {
         if (getTotalLines() == 1) {
-            return getSingleLineWidth(charArray, charSize);
+            return getSingleLineWidth(getCharArray(), charSize);
         } else {
-            String[] lines = new String(charArray).split("\n");
+            String[] lines = new String(getCharArray()).split("\n");
             float maxLength = 0;
             for (String line : lines) {
                 float lineLength = getSingleLineWidth(line.toCharArray(), charSize);
@@ -59,7 +45,7 @@ public class Text {
 
     public void draw(float x, float y) {
         float baseX = x;
-        for (char c : charArray) {
+        for (char c : getCharArray()) {
             if (c == '\n') {
                 x = baseX;
                 y -= charSize;
@@ -80,6 +66,32 @@ public class Text {
             charLength++;
         }
         return charSize * charLength;
+    }
+
+    public static Text of(String text) {
+        return of(text, 1.0F);
+    }
+
+    public static Text of(String text, float scale) {
+        return new Text(scale) {
+            @Override
+            public char[] getCharArray() {
+                return text.toCharArray();
+            }
+        };
+    }
+
+    public static Text translatable(String text) {
+        return translatable(text, 1.0F);
+    }
+
+    public static Text translatable(String text, float scale) {
+        return new Text(scale) {
+            @Override
+            public char[] getCharArray() {
+                return LanguageManager.getStringTranslation(text).toCharArray();
+            }
+        };
     }
 
 }
