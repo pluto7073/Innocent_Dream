@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 
 public class InnocentDream implements Runnable {
 
-    public static final String version = "LT-2023.0.0";
+    public static final String version = "a2023.0.1";
     public static volatile boolean isRunning = false;
 
     public static final Logger logger = LogManager.getLogger("InnocentDream");
@@ -49,9 +49,9 @@ public class InnocentDream implements Runnable {
         NetworkManager.init();
         LibraryManager.lwjgl();
         GamePropertyManager.start();
+        LoadScreen.addTask(new ModLoader());
         LoadScreen.addTask(new ResourceManager());
         LoadScreen.addTask(new CharacterManager());
-        LoadScreen.addTask(new ModLoader());
         discord = new DiscordManager();
         timer = new Timer();
         Thread thread = new Thread(new InnocentDream());
