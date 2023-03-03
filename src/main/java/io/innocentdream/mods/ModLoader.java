@@ -34,7 +34,7 @@ public class ModLoader implements Task {
             }
             try {
                 Mod mod = Mod.loadModFromJar(file);
-                LOGGER.info("Loaded Mod: " + mod.getId());
+                LOGGER.info(String.format("Loaded Mod: %s-%s.jar", mod.getId(), mod.getVersion()));
                 LOADED_MODS.add(mod);
             } catch (ModInitializationException e) {
                 LOGGER.error("Error Occurred in loading Mod: \n", e);

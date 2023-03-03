@@ -23,13 +23,18 @@ import java.net.URLClassLoader;
 public class Mod {
 
     private final JsonObject data;
-    private final String id;
+    private final String id, version;
     private final File sourceFile;
 
-    private Mod(JsonObject data, String id, File sourceFile) {
+    private Mod(JsonObject data, String id, File sourceFile, String version) {
         this.data = data;
         this.id = id;
         this.sourceFile = sourceFile;
+        this.version = version;
+    }
+
+    public String getVersion() {
+        return version;
     }
 
     public JsonObject getData() {
@@ -76,14 +81,14 @@ public class Mod {
         try {
             boolean found = false;
             for (FileHeader f : zip.getFileHeaders()) {
-                if (f.getFileName().endsWith(".idmod.json")) {
+                if (f.getFileName().equals("id.mod.json")) {
                     infoFileStream = zip.getInputStream(f);
                     found = true;
                     break;
                 }
             }
             if (!found) {
-                throw new ModInitializationException("No idmod.json file was found, make sure it is in the jar!");
+                throw new ModInitializationException("No id.mod.json file was found, make sure it is in the jar!");
             }
         } catch (ZipException e) {
             throw new ModInitializationException("Error in finding files in JAR: " + e.getMessage());
@@ -92,7 +97,8 @@ public class Mod {
         }
         JsonObject modObject = Streams.parse(new JsonReader(new InputStreamReader(infoFileStream))).getAsJsonObject();
         String modId = JsonHelper.getString(modObject, "id");
-        Mod mod = new Mod(modObject, modId, sourceFile);
+        String version = JsonHelper.getString(modObject, "version");
+        Mod mod = new Mod(modObject, modId, sourceFile, version);
         mod.initialize();
         return mod;
     }
