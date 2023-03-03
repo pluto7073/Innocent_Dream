@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'io.innocentdream'
+version 'a2023.0.0'
+
+repositories {
+    mavenCentral()
+    maven { url = "https://maven.scijava.org/content/repositories/public/" }
+    maven { url = "https://jitpack.io" }
+}
+
+dependencies {
+    implementation platform("org.lwjgl:lwjgl-bom:$lwjgl_version")
+    implementation 'junit:junit:4.12'
+    implementation "com.github.JnCrMx:discord-game-sdk4j:${discord_sdk_version}"
+    implementation "com.google.code.gson:gson:${gson_version}"
+    implementation "org.joml:joml:${joml_version}"
+    implementation "org.apache.logging.log4j:log4j-1.2-api:${log4j_version}"
+    implementation "org.apache.logging.log4j:log4j-api:${log4j_version}"
+    implementation "org.apache.logging.log4j:log4j-core:${log4j_version}"
+    implementation "org.lwjgl:lwjgl"
+    implementation "org.lwjgl:lwjgl-assimp"
+    implementation "org.lwjgl:lwjgl-bgfx"
+    implementation "org.lwjgl:lwjgl-glfw"
+    implementation "org.lwjgl:lwjgl-nanovg"
+    implementation "org.lwjgl:lwjgl-nuklear"
+    implementation "org.lwjgl:lwjgl-openal"
+    implementation "org.lwjgl:lwjgl-opengl"
+    implementation "org.lwjgl:lwjgl-par"
+    implementation "org.lwjgl:lwjgl-stb"
+    implementation "org.lwjgl:lwjgl-vulkan"
+    implementation "com.github.Querz:NBT:$nbt_version"
+    implementation "net.lingala.zip4j:zip4j:$zip4j_version"
+}
+
+test {
+    useJUnitPlatform()
+}
