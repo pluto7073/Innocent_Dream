@@ -7,9 +7,11 @@ import io.innocentdream.rendering.ResourceManager;
 import io.innocentdream.rendering.TextureHelper;
 import io.innocentdream.screens.LoadScreen;
 import io.innocentdream.utils.*;
-import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 
 public class InnocentDream implements Runnable {
 
@@ -43,7 +45,6 @@ public class InnocentDream implements Runnable {
     }
 
     public static void main(String[] args) {
-        logger.setLevel(Level.ALL);
         logger.info("Starting Innocent Dream version " + version + "...");
         Utils.init(args);
         NetworkManager.init();

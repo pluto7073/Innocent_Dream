@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Innocent Dream" type="Application" factoryName="Application">
+    <envs>
+      <env name="log4j2.configurationFile" value="run\log4j.xml" />
+      <env name="innocentdream.runDir" value="C:\Users\jdv20\dev\minecraft\Innocent_Dream\run" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="io.innocentdream.InnocentDream" />
+    <module name="Innocent_Dream.main" />
+    <option name="PROGRAM_PARAMETERS" value="&quot;--runDir&quot; &quot;C:\Users\jdv20\dev\minecraft\Innocent_Dream\run&quot;" />
+    <shortenClasspath name="ARGS_FILE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

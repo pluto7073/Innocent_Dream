@@ -34,8 +34,8 @@ public final class Utils {
     private static void setupRunDir() {
         File runDir = newFile("run");
 
-        if (RUN_ARGS.containsKey("runDir")) {
-            String specifiedRunDirPath = RUN_ARGS.get("runDir");
+        if (System.getenv().containsKey("innocentdream.runDir")) {
+            String specifiedRunDirPath = System.getenv("innocentdream.runDir");
             InnocentDream.logger.info("Run args contains run dir path: %s".formatted(specifiedRunDirPath));
             File testDir = newFile(specifiedRunDirPath);
             runDir = testDir;
