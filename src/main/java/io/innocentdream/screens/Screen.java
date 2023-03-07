@@ -43,4 +43,8 @@ public abstract class Screen {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
     }
 
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

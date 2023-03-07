@@ -288,16 +288,4 @@ public final class Utils {
         setupRunDir();
     }
 
-    public static class BiHolder<T, N> {
-        public T item1;
-        public N item2;
-        public BiHolder(T t, N n) {
-            this.item1 = t;
-            this.item2 = n;
-        }
-
-        public BiHolder() {}
-
-    }
-
 }

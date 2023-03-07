@@ -26,7 +26,7 @@ public class LoadScreen extends Screen implements Runnable {
     private final Function<Identifier, ? extends Screen> afterLoadBuilder;
 
     public LoadScreen(Function<Identifier, ? extends Screen> afterLoadBuilder) {
-        super("loading", new int[] { 0, 0, 0, 0 });
+        super("Load Screen", new int[] { 0, 0, 0, 0 });
         this.plutoGamesLogo = new GUIObject(-512, -512, 1024, 1024, new Identifier("assets", "gui/pluto-games.png"));
         this.innocentDreamLogo = new GUIObject(-512, -512, 1024, 1024, new Identifier("assets", "gui/icon/icon-32.png"));
         this.date = new Date();
