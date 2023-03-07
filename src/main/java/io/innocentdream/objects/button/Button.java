@@ -8,6 +8,7 @@ import io.innocentdream.rendering.DisplayManager;
 import io.innocentdream.rendering.ResourceManager;
 import io.innocentdream.rendering.TextureHelper;
 import io.innocentdream.utils.Identifier;
+import org.lwjgl.stb.STBImage;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -67,7 +68,7 @@ public class Button extends GUIObject {
                 return 0;
             }
         }
-        return isSelected ? TextureHelper.loadTexture(on) : TextureHelper.loadTexture(off);
+        return isSelected ? TextureHelper.loadPreLoadedTexture(on) : TextureHelper.loadPreLoadedTexture(off);
     }
 
     public Button addOnClickListener(ButtonListener l) {

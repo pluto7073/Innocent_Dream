@@ -17,22 +17,12 @@ import static org.lwjgl.opengl.GL15.*;
 
 public class ModelLoader {
 
-    private final Map<Float[], BiContainer<Integer, Integer>> MODELS = new HashMap<>();
-
     private final List<Integer> vaos = new ArrayList<>();
     private final List<Integer> vbos = new ArrayList<>();
 
     public Model loadToVAO(float[] positions, float[] textureCoordinates) {
-        if (MODELS.containsKey(Utils.convertToClassArray(positions))) {
-            BiContainer<Integer, Integer> holder = MODELS.get(
-                    Utils.convertToClassArray(Utils.join(positions, textureCoordinates)));
-            return new Model(holder.x != null ? holder.x : 0, positions.length / 3);
-        }
         int vaoID = createVAO();
-        BiContainer<Integer, Integer> holder = new BiContainer<>();
-        holder.x = vaoID;
-        holder.y = bindIndicesBuffer(new int[] { 0, 1, 3, 1, 2, 3 });
-        MODELS.put(Utils.convertToClassArray(Utils.join(positions, textureCoordinates)), holder);
+        bindIndicesBuffer(new int[] { 0, 1, 3, 1, 2, 3 });
         storeDataInList(0, 3, positions);
         storeDataInList(1, 2, textureCoordinates);
         unbindVAO();
@@ -40,17 +30,11 @@ public class ModelLoader {
     }
 
     public Model loadToVAO(float[] positions) {
-        if (MODELS.containsKey(Utils.convertToClassArray(positions))) {
-            BiContainer<Integer, Integer> holder = MODELS.get(Utils.convertToClassArray(positions));
-            return new Model(holder.x != null ? holder.x : 0, positions.length / 3);
-        }
         int vaoID = createVAO();
+        bindIndicesBuffer(new int[] { 0, 1, 3, 1, 2, 3 });
         storeDataInList(0, 2, positions);
         storeDataInList(1, 2, new float[] { 0, 1, 0, 0, 1, 0, 1, 1 });
         unbindVAO();
-        BiContainer<Integer, Integer> holder = new BiContainer<>();
-        holder.x = vaoID;
-        MODELS.put(Utils.convertToClassArray(positions), holder);
         return new Model(vaoID, positions.length / 2);
     }
 
@@ -58,8 +42,7 @@ public class ModelLoader {
         int vbo = GL15.glGenBuffers();
         vbos.add(vbo);
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vbo);
-        IntBuffer buffer = toIntBuffer(indices);
-        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, toIntBuffer(indices), GL15.GL_STATIC_DRAW);
         return vbo;
     }
 
@@ -86,7 +69,8 @@ public class ModelLoader {
         FloatBuffer dataBuffer = toFloatBuffer(data);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dataBuffer, GL15.GL_STATIC_DRAW);
         GL20.glVertexAttribPointer(index, size, GL11.GL_FLOAT, false, 0, 0);
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        glEnableVertexAttribArray(index);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     private void unbindVAO() {
