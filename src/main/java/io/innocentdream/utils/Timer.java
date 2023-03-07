@@ -3,7 +3,7 @@ package io.innocentdream.utils;
 public class Timer {
 
     private long lastValue;
-    private long difference;
+    public long difference;
 
     public Timer() {
         lastValue = System.currentTimeMillis();

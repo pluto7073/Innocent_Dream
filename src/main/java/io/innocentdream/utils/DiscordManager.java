@@ -5,6 +5,8 @@ import de.jcm.discordgamesdk.CreateParams;
 import de.jcm.discordgamesdk.LogLevel;
 import de.jcm.discordgamesdk.activity.Activity;
 import io.innocentdream.InnocentDream;
+import io.innocentdream.crash.CrashReport;
+import io.innocentdream.crash.CrashReportPopulator;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.Instant;
 
-public class DiscordManager implements Runnable {
+public class DiscordManager implements Runnable, CrashReportPopulator {
 
     private final Core core;
     public Activity activity;
@@ -78,4 +80,8 @@ public class DiscordManager implements Runnable {
         }
     }
 
+    @Override
+    public void populateCrashReport(CrashReport report) {
+
+    }
 }

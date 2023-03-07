@@ -2,6 +2,9 @@ package io.innocentdream.rendering;
 
 import io.innocentdream.InnocentDream;
 import io.innocentdream.actions.Actions;
+import io.innocentdream.crash.CrashReport;
+import io.innocentdream.crash.CrashReportPopulator;
+import io.innocentdream.crash.CrashReportSection;
 import io.innocentdream.objects.texts.CharacterManager;
 import io.innocentdream.rendering.shaders.GUIShader;
 import io.innocentdream.rendering.shaders.MainShader;
@@ -31,7 +34,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.stb.STBImage.*;
 import static org.lwjgl.opengl.GL11.*;
 
-public class DisplayManager implements Runnable {
+public class DisplayManager implements Runnable, CrashReportPopulator {
 
     public static long win;
     public static int WIDTH;
@@ -43,12 +46,19 @@ public class DisplayManager implements Runnable {
     public MainShader mainShader;
     public GUIShader guiShader;
 
+    private Thread currentThread;
+    public long currentDisplayTick;
+
+    private DisplayManager() {}
+
     public static DisplayManager create() {
         DisplayManager display = new DisplayManager();
         display.activeScreens.add(new LoadScreen(MainMenuScreen::new));
         Thread thread = new Thread(display);
         thread.setName("RenderThread");
         thread.start();
+        display.setThread(thread);
+        CrashReport.POPULATORS.add(display);
         return display;
     }
 
@@ -127,10 +137,36 @@ public class DisplayManager implements Runnable {
         loop();
     }
 
+    private void setThread(Thread t) {
+        this.currentThread = t;
+    }
+
+    public Thread getCurrentThread() {
+        return this.currentThread;
+    }
+
+    @Override
+    public void populateCrashReport(CrashReport report) {
+        StackTraceElement[] trace = this.currentThread.getStackTrace();
+        CrashReportSection section = new CrashReportSection("RenderThread Info:")
+                .setStackTrace(trace)
+                .addRow("Window ID: " + win)
+                .addRow("Window Size: " + WIDTH + " x " + HEIGHT)
+                .addRow("Active Screen: " + this.activeScreens.peek().toString())
+                .addRow("Display Tick: " + this.currentDisplayTick)
+                .addRow("Fullscreen or Windowed? " +
+                        (GamePropertyManager.getFullscreenProperty() ? "Fullscreen" : "Windowed"))
+                .addRow("Last Tick Length: " + (InnocentDream.timer.getTimeDifference() * 5f));
+        report.addSection(section);
+    }
+
     public void goFullscreen() {
         glfwMakeContextCurrent(win);
         long monitor = glfwGetPrimaryMonitor();
         GLFWVidMode mode = glfwGetVideoMode(monitor);
+        if (mode == null) {
+            return;
+        }
         WIDTH = mode.width();
         HEIGHT = mode.height();
         glfwSetWindowMonitor(win, monitor, 0, 0, WIDTH, HEIGHT, mode.refreshRate());
@@ -157,10 +193,11 @@ public class DisplayManager implements Runnable {
         glLoadIdentity();
         ResourceManager.init();
         CharacterManager.loadCharacters();
+        this.currentDisplayTick = 0L;
         while (!glfwWindowShouldClose(win)) {
             glfwMakeContextCurrent(win);
 
-            activeScreens.lastElement().drawBackground();
+            activeScreens.peek().drawBackground();
 
             glfwPollEvents();
 
@@ -168,20 +205,20 @@ public class DisplayManager implements Runnable {
             mainShader.start();
 
             try {
-                activeScreens.lastElement().drawScreen();
+                activeScreens.peek().drawScreen();
             } catch (Exception e) {
-                InnocentDream.logger.error("Exception in drawing screen %s".formatted(activeScreens.lastElement().name), e);
+                InnocentDream.logger.error("Exception in drawing screen %s".formatted(activeScreens.peek().name), e);
             }
-            Actions.pollActions(activeScreens.lastElement());
+            Actions.pollActions(activeScreens.peek());
 
             mainShader.stop();
             guiShader.start();
 
             try {
-                activeScreens.lastElement().drawGUI();
+                activeScreens.peek().drawGUI();
             } catch (Exception e) {
                 InnocentDream.logger.error(
-                        "Exception in drawing screen GUI %s".formatted(activeScreens.lastElement().name), e);
+                        "Exception in drawing screen GUI %s".formatted(activeScreens.peek().name), e);
             }
 
             guiShader.stop();
@@ -190,6 +227,7 @@ public class DisplayManager implements Runnable {
             glfwSwapBuffers(win);
 
             InnocentDream.timer.updateTime();
+            this.currentDisplayTick++;
         }
         cleanUp();
         InnocentDream.isRunning = false;
@@ -216,10 +254,7 @@ public class DisplayManager implements Runnable {
     }
 
     public void cleanUp() {
-        InnocentDream.logger.debug("Unloading models");
         loader.cleanUp();
-        InnocentDream.logger.debug("Done!");
-        InnocentDream.logger.debug("Unloading textures");
         TextureHelper.cleanUp();
         InnocentDream.logger.debug("Done!");
     }
